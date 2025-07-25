@@ -6,7 +6,9 @@
 //
 
 import Foundation
+import SwiftData
 
+@Model
 class Friend {
     //not equals sign because it is an empty data type
     var name: String
