@@ -11,20 +11,27 @@ import SwiftData
 struct ContentView: View {
     
     @Query private var friends: [Friend]
+    //allows us to read default values in the SwiftUI file
     @Environment(\.modelContext) private var context
     @State private var newName = ""
     @State private var newBirthday = Date.now
     
     var body: some View {
         NavigationStack{
-            List(friends){friend in
-                HStack{
-                    Text(friend.name)
-                    Spacer()
-                    Text(friend.birthday, format: .dateTime.month(.wide).day().year())
+            List{
+                //ForEach inside a list tells SwiftUI to treat each row uniquely (makes it easier to manage deletions or other row-level operations)
+                ForEach(friends) { friend in
+                    HStack{
+                        HStack{
+                            Text(friend.name)
+                            Spacer()
+                            Text(friend.birthday, format: .dateTime.month(.wide).day().year())
+                        }
+                    }
         }
-        
+                .onDelete(perform: deleteFriend)
             }
+            
             .navigationTitle("Birthdays")
             .safeAreaInset(edge: .bottom){
                 VStack (alignment: .center, spacing: 20){
@@ -53,6 +60,13 @@ struct ContentView: View {
     
         
         }
+    //what does this do? what are offsets and index and indexset
+    func deleteFriend(at offsets: IndexSet){
+        for index in offsets {
+            let friendtoDelete = friends[index]
+            context.delete(friendtoDelete)
+        }
+    }
     }
 
 
